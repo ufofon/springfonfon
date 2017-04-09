@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC 
+"-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oraclejava.alpha.dao.impl.mapper.UserMapper">
+	<insert id="insertUser" parameterType="User" useGeneratedKeys="true"
+		keyProperty="id" keyColumn="id">
+
+		INSERT INTO TB_USER(
+		name
+		,email
+
+		)VALUES (
+		#{name}
+		,#{email}
+		)
+	</insert>
+
+	<update id="updateUser" parameterType="User">
+		UPDATE tb_user SET
+		name=#{name}
+		, email = #{email}
+		WHERE id = #{id}
+
+	</update>
+
+	<delete id="deleteUser" parameterType="User">
+		DELETE FROM tb_user
+		WHERE id = #{id}
+	</delete>
+
+
+	<resultMap type="User" id="user-result">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="email" column="email" />
+		<association property="userAccount" javaType="UserAccount">
+			<id property="userId" column="id" />
+			<result property="loginId" column="login_id" />
+			<result property="status" column="status" />
+		</association>
+	</resultMap>
+
+	<sql id="select-column-user">
+		t1.id
+		,t1.name
+		,t1.email
+		,t2.login_id
+		,t2.status
+	</sql>
+
+	<select id="selectUser" parameterType="User" resultMap="user-result">
+
+		SELECT
+		<include refid="select-column-user" />
+		FROM tb_user t1
+		INNER JOIN tb_user_account t2
+		ON t1.id = t2.user_id
+		WHERE t1.id = #{id}
+	</select>
+
+	<select id="selectUsers" parameterType="UserSearch" resultMap="user-result">
+
+		SELECT
+		*
+		FROM(
+
+		SELECT
+		<include refid="select-column-user" />
+		FROM tb_user t1
+		INNER JOIN tb_user_account t2
+		ON t1.id = t2.user_id
+		WHERE t2.del_yn = 0
+
+		<!-- 검색 조건 없음 -->
+
+		<if test="name != null and name != ''">
+			<bind name="param_name" value="'%' + name + '%'" />
+			AND name LIKE #{param_name}
+
+			<!-- AND name LIKE CONCAT('%',#{name},'%') 더 많이 씀 -->
+
+			<!-- AND name LIKE CONCAT '%${name}%') 인젝션 대상이 된다 -->
+		</if>
+		<if test="status != null  and status != ''">
+			AND status = #{status}
+		</if>
+		ORDER BY t1.id DESC
+
+		)tt
+		LIMIT #{start},#{limit}
+
+	</select>
+	
+	<select id="selectUsersCount"  
+	       parameterType="UserSearch"
+	       resultType="int"	>
+	       
+	     SELECT
+         COUNT(t1.id)
+        FROM tb_user t1
+        INNER JOIN tb_user_account t2
+        ON t1.id = t2.user_id
+        WHERE t2.del_yn = 0
+        
+        <if test="name != null and name != ''">
+            <bind name="param_name" value="'%' + name + '%'" />
+            AND t1.name LIKE #{param_name}
+        
+        </if>
+        <if test="status != null  and status != ''">
+            AND t2.status = #{status}
+        </if>
+      	
+	</select>
+	
+	<!-- user  account  -->
+	<insert id="insertUserAccount"
+	        parameterType="UserAccount" >
+	        
+	      INSERT  INTO  tb_user_account(
+	           id
+	           ,login_id
+	           ,password
+	           ,status
+	           ,del_yn
+	         ) VALUES (
+	           #{id}
+	           ,#{loginId}
+	           ,#{password}
+	           ,#{status}
+	           , 0
+	         )
+	</insert>
+	
+  <update id="updateUserAccount"
+          parameterType="UserAccount">
+    UPDATE   tb_user_account  SET
+           login_id  =  #{loginId}
+           ,status = #{status} 
+       WHERE  user_id = #{userId}          
+  </update>	
+ <!--  페스워드 변경  sql  별도 만들기	 -->
+	
+	<update id="updateUserAccount"
+          parameterType="Long">
+	
+	  UPDATE  tb_user_account  SET
+	      del_yn = 1
+	      WHERE  user_id = #{value}
+	</update>
+
+<resultMap type="UserAccount" id="selectUserAccount">
+    <id   property="userId"  column="user_id"/>
+    <result property="loginId"  column="login_id"/>
+    <result property="password"  column="password"/>
+    <result property="status"  column="status"/>
+</resultMap>
+
+
+<select id="selectUserAccount"
+          parameterType="Long"
+          resultMap="user-account-result">
+          SELECT
+            user_id,
+            login_id,
+            password,
+            status
+          FROM tb_user_account
+          WHERE  del_yn = 0
+          AND  user_id  = #{value}
+
+
+</select>
+
+
+
+
+</mapper>
+

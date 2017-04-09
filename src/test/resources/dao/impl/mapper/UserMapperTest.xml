@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+   <tb_user  id="1" name="test1" email="kores1@daum.net" />
+   <tb_user  id="2" name="test2" email="kores2@daum.net" />
+   <tb_user  id="3" name="test3" email="kores3@daum.net" />
+   <tb_user  id="4" name="test4" email="kores4@daum.net" />
+   
+   
+   <tb_user_account user_id ="1"  login_id="test1" password="1234"
+                status="ACTIVE"  del_yn="0" />
+   <tb_user_account user_id ="2"  login_id="test2" password="1234"
+                status="ACTIVE"  del_yn="0" />
+   <tb_user_account user_id ="3"  login_id="test3" password="1234"
+                status="INACTIVE"  del_yn="0" />
+   <tb_user_account user_id ="4"  login_id="test4" password="1234"
+                status="INACTIVE"  del_yn="0" />
+
+
+</dataset>
