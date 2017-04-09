@@ -20,6 +20,9 @@ import com.oraclejava.alpha.service.NoticeService;
 @Controller
 @RequestMapping("/notice")
 public class NoticeController {
+
+	
+	
 	
 	private  static Logger  logger =
 			 LoggerFactory.getLogger(NoticeController.class);
