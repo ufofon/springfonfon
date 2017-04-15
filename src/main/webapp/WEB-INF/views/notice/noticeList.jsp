@@ -2,18 +2,15 @@
     pageEncoding="UTF-8"%>
 
  <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>   
-    
+ <%@ taglib prefix="tiles"  uri="http://tiles.apache.org/tags-tiles" %>  
  <c:set  var="ctx"  value="${pageContext.request.contextPath}"/> 
-    
-<!DOCTYPE html>
-<html>
-<head>
-<meta  charset="UTF-8">
-<title>공지 사항</title>
-</head>
-<body>
 
+<tiles:insertDefinition name="defaultlayout" >
+    <tiles:putAttribute name="title">공지 사항 </tiles:putAttribute>
+    <tiles:putAttribute name="body">
+   
 <h1> 공지 사항 </h1>
+
 
 <table>
  <thead>
@@ -38,8 +35,7 @@
 </tbody>
 
 </table>
-
 <a href="notice/new">등록</a>
 
-</body>
-</html>
+</tiles:putAttribute>
+</tiles:insertDefinition>

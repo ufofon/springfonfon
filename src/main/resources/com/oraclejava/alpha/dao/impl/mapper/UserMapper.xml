@@ -144,15 +144,14 @@
   </update>	
  <!--  페스워드 변경  sql  별도 만들기	 -->
 	
-	<update id="updateUserAccount"
+<delete id="deleteUserAccount"
           parameterType="Long">
-	
 	  UPDATE  tb_user_account  SET
 	      del_yn = 1
-	      WHERE  user_id = #{value}
-	</update>
+	  WHERE  user_id = #{value}
+</delete>
 
-<resultMap type="UserAccount" id="selectUserAccount">
+<resultMap type="UserAccount" id="user-account-result">
     <id   property="userId"  column="user_id"/>
     <result property="loginId"  column="login_id"/>
     <result property="password"  column="password"/>
@@ -174,8 +173,18 @@
 
 
 </select>
-
-
+<select id="selectUserAccountByLoginId"
+          parameterType="String"
+          resultMap="user-account-result">
+          SELECT
+            user_id,
+            login_id,
+            password,
+            status
+          FROM tb_user_account
+          WHERE  del_yn = 0
+          AND  login_id  = #{value}
+</select>
 
 
 </mapper>
